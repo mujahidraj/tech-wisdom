@@ -9,13 +9,16 @@ export class RegistrationService {
 
     constructor(private prisma: PrismaService) { }
 
+    // student sign up
+
+
     async signup_student(dto: registrationDto) {
 
-            //generate the password
+            
          const hash = await argon.hash(dto.hash);
        try{
          
-         //insert the user in the database
+         
          const student = await this.prisma.student.create({
              data : {
                  first_name : dto.first_name,
@@ -27,9 +30,9 @@ export class RegistrationService {
              },
          });
          delete student.hash;
-         //return user from the database
+        
          return student;
-        //return 'Sign up Successful.';
+        
        }
        catch(error){
         if( 
@@ -37,7 +40,7 @@ export class RegistrationService {
         ){
             if (error.code==='P2002'){
                 throw new ForbiddenException(
-                    'Hey! You are using a duplicate Username.',
+                    'Hey! You are using a duplicate Username for teacher.',
                 )
             }
         }
@@ -50,11 +53,11 @@ export class RegistrationService {
 
     async signup_teacher(dto:teacherDto) {
 
-        //generate the password
+        
      const hash = await argon.hash(dto.hash);
    try{
      
-     //insert the user in the database
+    
      const teacher = await this.prisma.teacher.create({
          data : {
              
@@ -66,15 +69,15 @@ export class RegistrationService {
                 
                  username: dto.username,
                 
-                 hash: dto.hash,
+                 hash,
                 
                  specialization: dto.specialization
          },
      });
      delete teacher.hash;
-     //return user from the database
+     
      return teacher;
-    //return 'Sign up Successful.';
+    
    }
    catch(error){
     if( 
@@ -91,8 +94,37 @@ export class RegistrationService {
 }
     
 
-    signin_student(dto: registrationDto) {
-        return 'Sign in Successful';
+    // student signin
+
+
+  async  signin_student(dto: registrationDto) {
+
+    const student = await this.prisma.student.findUnique({
+        where :  {
+            username : dto.username,
+        },
+    });
+    if(!student){
+        throw new ForbiddenException(
+            'Username Does not Matched.Please Try again.'
+        );
+    }
+
+    const passwordMatch = await argon.verify(
+        student.hash,
+        dto.hash,
+    )
+
+    if(!passwordMatch){
+        throw new ForbiddenException(
+            'Password does not matched. Please try again'
+        );
+    }
+        delete student.hash;
+        return student;
+
+
+       
     }
 
 

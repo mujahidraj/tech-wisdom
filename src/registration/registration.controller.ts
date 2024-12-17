@@ -22,4 +22,11 @@ export class RegistrationController {
     signup_teacher(@Body() dto:teacherDto){
         return this.registrationService.signup_teacher(dto);
     }
+
+    @Post('signin_teacher')
+    signin_teacher(@Body() dto : registrationDto){
+        
+        return this.registrationService.signin_student(dto);
+    }
+
 }
