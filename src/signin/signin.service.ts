@@ -5,10 +5,12 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { registrationDto } from 'src/registration/dto';
 import { signinDto, teachersigninDto } from './dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SigninService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService,private jwt:JwtService,private config:ConfigService) { }
 
     // student signin
 
@@ -37,7 +39,7 @@ export class SigninService {
             );
         }
         delete student.hash;
-        return student;
+        return this.signToken(student.id, student.email);
 
 
 
@@ -75,12 +77,35 @@ export class SigninService {
                 'Password does not matched. Please try again'
             );
         }
-        delete teacher.hash;
-        return teacher;
+        return this.signToken(teacher.id, teacher.email); 
 
 
 
     }
+
+    async signToken(
+        userId: number,
+        email: string,
+      ): Promise<{ access_token: string }> {
+        const payload = {
+          sub: userId,
+          email,
+        };
+        const secret = this.config.get('JWT_SECRET');
+    
+        const token = await this.jwt.signAsync(
+          payload,
+          {
+            expiresIn: '15m',
+            secret: secret,
+          },
+        );
+    
+        return {
+          access_token: token,
+        };
+      }
+
 
 }
 

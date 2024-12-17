@@ -22,8 +22,7 @@ model student {
   hash              String
   createdAt         DateTime      @default(now())
   updateAt          DateTime      @updatedAt
-  course_id       Int @default(1)
-  courses1           courses      @relation(fields: [course_id], references: [id])
+ 
   enrollment_status String?
   enrollment        enrollment[]
   transaction       transaction[]
@@ -53,7 +52,7 @@ model courses {
   teacher teacher @relation(fields: [instructor_id], references: [id])
 
   time           DateTime         @default(now())
-  student        student[]
+ 
   enrollment     enrollment[]
   course_content course_content[]
   transaction    transaction[]

@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { SigninModule } from './signin/signin.module';
 import { ConfigModule } from '@nestjs/config';
+import { JwtStrategy } from './registration/strategy';
 
 
 @Module({

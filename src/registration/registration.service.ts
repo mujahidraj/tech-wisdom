@@ -1,13 +1,16 @@
-import { Body, ForbiddenException, Injectable, Post } from '@nestjs/common';
+import { Body, ForbiddenException, Injectable, Post , Get} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { registrationDto, teacherDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RegistrationService {
+    
 
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService ,private jwt:JwtService ,private config:ConfigService) { }
 
     // student sign up
 
@@ -29,9 +32,9 @@ export class RegistrationService {
                  enrollment_status :dto.enrollment_status
              },
          });
-         delete student.hash;
+         
         
-         return student;
+         return this.signToken(student.id, student.email);
         
        }
        catch(error){
@@ -74,9 +77,9 @@ export class RegistrationService {
                  specialization: dto.specialization
          },
      });
-     delete teacher.hash;
+    
      
-     return teacher;
+     return this.signToken(teacher.id, teacher.email);
     
    }
    catch(error){
@@ -91,41 +94,33 @@ export class RegistrationService {
     }
     throw error;
    }
-}
+
+
+   //signintoken
+        
+    }
+    async signToken(
+        userId: number,
+        email: string,
+      ): Promise<{ access_token: string }> {
+        const payload = {
+          sub: userId,
+          email,
+        };
+        const secret = this.config.get('JWT_SECRET');
     
-
-    // student signin
-
-
-  async  signin_student(dto: registrationDto) {
-
-    const student = await this.prisma.student.findUnique({
-        where :  {
-            username : dto.username,
-        },
-    });
-    if(!student){
-        throw new ForbiddenException(
-            'Username Does not Matched.Please Try again.'
+        const token = await this.jwt.signAsync(
+          payload,
+          {
+            expiresIn: '15m',
+            secret: secret,
+          },
         );
-    }
-
-    const passwordMatch = await argon.verify(
-        student.hash,
-        dto.hash,
-    )
-
-    if(!passwordMatch){
-        throw new ForbiddenException(
-            'Password does not matched. Please try again'
-        );
-    }
-        delete student.hash;
-        return student;
-
-
-       
-    }
+    
+        return {
+          access_token: token,
+        };
+      }
 
 
 }
