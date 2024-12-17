@@ -8,6 +8,8 @@ import { SigninModule } from './signin/signin.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './registration/strategy';
 
+import { TeacherModule } from './teacher/teacher.module';
+
 
 @Module({
 
@@ -15,6 +17,6 @@ import { JwtStrategy } from './registration/strategy';
   providers: [AppService, PrismaService],
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), RegistrationModule, PrismaModule, SigninModule],
+  }), RegistrationModule, PrismaModule, SigninModule, TeacherModule],
 })
 export class AppModule { }
