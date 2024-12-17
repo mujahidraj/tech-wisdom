@@ -5,23 +5,23 @@ export class registrationDto{
     
     @IsNotEmpty()
     @IsString()
-    first_name : String
+    first_name : string
     @IsNotEmpty()
     @IsString()
-    last_name : String
+    last_name : string
     @IsEmail()
     @IsString()
     @IsNotEmpty()
-    email     : String
+    email     : string
     @IsString()
     @IsNotEmpty()
-    username  : String
+    username  : string
     @IsNotEmpty()
     @IsString()
-    hash      : String
+    hash      : string
     @IsNotEmpty()
     @IsString()
-    enrollment_status : String
+    enrollment_status : string
 
 
 
