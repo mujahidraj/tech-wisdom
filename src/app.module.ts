@@ -9,11 +9,11 @@ import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
-  
+
   controllers: [AppController],
-  providers: [AppService , PrismaService],
+  providers: [AppService, PrismaService],
   imports: [ConfigModule.forRoot({
-    isGlobal : true,
-  }),RegistrationModule, PrismaModule, SigninModule],
+    isGlobal: true,
+  }), RegistrationModule, PrismaModule, SigninModule],
 })
-export class AppModule {}
+export class AppModule { }

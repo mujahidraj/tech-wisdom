@@ -14,26 +14,89 @@ datasource db {
 }
 
 model student {
-  id Int @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String
-  username   String @unique
-  hash       String
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
-
+  id                Int           @unique @default(autoincrement())
+  first_name        String
+  last_name         String
+  email             String
+  username          String        @unique
+  hash              String
+  createdAt         DateTime      @default(now())
+  updateAt          DateTime      @updatedAt
+  course_id       Int @default(1)
+  courses1           courses      @relation(fields: [course_id], references: [id])
   enrollment_status String?
+  enrollment        enrollment[]
+  transaction       transaction[]
+  review            review[]
 }
 
 model teacher {
-  id             Int      @default(autoincrement())
+  id             Int       @unique @default(autoincrement())
   first_name     String
   last_name      String
   email          String
-  username       String   @unique
+  username       String    @unique
   hash           String
   specialization String
-  createAt       DateTime @default(now())
-  updateAt       DateTime @updatedAt
+  createAt       DateTime  @default(now())
+  updateAt       DateTime  @updatedAt
+  courses        courses[]
+}
+
+model courses {
+  id            Int     @unique @default(autoincrement())
+  title         String
+  description   String?
+  price         String
+  instructor_id Int
+
+  teacher teacher @relation(fields: [instructor_id], references: [id])
+
+  time           DateTime         @default(now())
+  student        student[]
+  enrollment     enrollment[]
+  course_content course_content[]
+  transaction    transaction[]
+  review         review[]
+}
+
+model enrollment {
+  id          Int      @unique @default(autoincrement())
+  student_id  Int
+  student     student  @relation(fields: [student_id], references: [id])
+  course_id Int
+  courses2     courses  @relation(fields: [course_id], references: [id])
+  time        DateTime @default(now())
+  status      String
+}
+
+model course_content {
+  id          Int      @unique @default(autoincrement())
+  course_id Int
+  courses3    courses  @relation(fields: [course_id], references: [id])
+  title       String
+  url         String
+  time        DateTime @default(now())
+}
+
+model transaction {
+  id           Int      @unique @default(autoincrement())
+  student_id   Int
+  student      student  @relation(fields: [student_id], references: [id])
+  course_id  Int
+  courses4      courses  @relation(fields: [course_id], references: [id])
+  amount       Float
+  payment_date DateTime @default(now())
+  status       String
+}
+
+model review {
+  id          Int      @unique @default(autoincrement())
+  course_id Int
+  courses5     courses  @relation(fields: [course_id], references: [id])
+  student_id  Int
+  student     student  @relation(fields: [student_id], references: [id])
+  rating      Int
+  comment     String
+  time        DateTime @default(now())
 }
