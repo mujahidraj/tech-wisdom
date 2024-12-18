@@ -4,12 +4,13 @@ import { JwtGuard } from 'src/registration/guard';
 import { GetUser } from 'src/signin/decorator';
 import { createdto } from './dto/createcontent.dto';
 import { editdto } from './dto/edit-content.dto';
+import { CourseContentService } from './course_content.service';
 
 @UseGuards(JwtGuard)
 @Controller('course-content')
 export class CourseContentController {
     CourseContentService: any;
-    constructor(private courseService : CoursesService){}
+    constructor(private courseService : CourseContentService){}
 
     
         @Get()
