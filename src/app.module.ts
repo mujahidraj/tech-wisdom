@@ -9,6 +9,11 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './registration/strategy';
 
 import { TeacherModule } from './teacher/teacher.module';
+import { CoursesModule } from './courses/courses.module';
+import { CourseContentModule } from './course_content/course_content.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
+import { ReviewModule } from './review/review.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 
 @Module({
@@ -17,6 +22,6 @@ import { TeacherModule } from './teacher/teacher.module';
   providers: [AppService, PrismaService],
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), RegistrationModule, PrismaModule, SigninModule, TeacherModule],
+  }), RegistrationModule, PrismaModule, SigninModule, TeacherModule, CoursesModule, CourseContentModule, EnrollmentModule, ReviewModule, TransactionModule],
 })
 export class AppModule { }
